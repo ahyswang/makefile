@@ -1,6 +1,6 @@
-CCFLAGS = -g -Wall -O0
+include config.make
 
-TARGET = a.out
+TARGET_EXE = a.out
 
 INCLUDES = -I./
 
@@ -10,15 +10,18 @@ SRCS = $(wildcard *.cpp)
 
 OBJS = $(SRCS:.cpp=.o)
 
-$(TARGET) : $(OBJS)
+$(TARGET_EXE) : $(OBJS)
 	$(CC) $^ -o $@ 
 
 %.o : %.c
-	$(CC) -c $< $(CCFLAGS)
+	$(CC) -c $< $(CFLAGS) 
 
-clean:
-	rm $(TARGET) $(OBJS)
+%.o : %.cpp
+	$(CXX) -c $< $(CCFLAGS) 
 
-info:
-	$(info $(SRCS))
-	$(info $(OBJS))
+clean :
+	rm $(TARGET_EXE) $(OBJS)
+
+install :
+	cp $(TARGET_EXE) $(PREFIX)
+	tar zcvf $(TAG)_$(VERSION)_$(TIME).tar.gz $(PREFIX)
